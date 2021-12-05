@@ -26,9 +26,6 @@ TextureImporter:
   - first:
       213: -4699125682104596830
     second: Cross_7
-  - first:
-      213: -7177226418052511246
-    second: Cross_8
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -305,27 +302,6 @@ TextureImporter:
       bones: []
       spriteID: 2a68d33d61a59ceb0800000000000000
       internalID: -4699125682104596830
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Cross_8
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2f94e6f699e556c90800000000000000
-      internalID: -7177226418052511246
       vertices: []
       indices: 
       edges: []

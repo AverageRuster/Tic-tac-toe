@@ -26,9 +26,6 @@ TextureImporter:
   - first:
       213: -7062908510064071790
     second: Zero_7
-  - first:
-      213: -2739102968204935825
-    second: Zero_8
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -305,27 +302,6 @@ TextureImporter:
       bones: []
       spriteID: 29b2c8881228bfd90800000000000000
       internalID: -7062908510064071790
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Zero_8
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f6d3de0ec50ccf9d0800000000000000
-      internalID: -2739102968204935825
       vertices: []
       indices: 
       edges: []

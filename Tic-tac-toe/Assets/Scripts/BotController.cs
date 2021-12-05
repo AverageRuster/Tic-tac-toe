@@ -9,6 +9,8 @@ public class BotController : MonoBehaviour
     /// </summary>
     public static CellController priorityCell;
 
+    [SerializeField] bool botCross;
+
     private void Update()
     {
         BotTurn();
@@ -16,12 +18,24 @@ public class BotController : MonoBehaviour
 
     private void BotTurn()
     {
-        if (GameManager.botTurn)
+        if (!GameManager.main.gameOver)
         {
-            CalculateCriorityCell();
-            priorityCell.cellContent = 2;
-            GameFieldController.freeCells.Remove(priorityCell);
-            GameManager.botTurn = false;
+            if (botCross && GameManager.main.crossTurn)
+            {
+                CalculateCriorityCell();
+                GameFieldController.freeCells.Remove(priorityCell);
+                priorityCell.cellContent = 1;
+                priorityCell.cellAnimator.Play("Cross");
+                GameManager.main.crossTurn = false;
+            }
+            else if (!botCross && GameManager.main.zeroTurn)
+            {
+                CalculateCriorityCell();
+                GameFieldController.freeCells.Remove(priorityCell);
+                priorityCell.cellContent = 2;
+                priorityCell.cellAnimator.Play("Zero");
+                GameManager.main.zeroTurn = false;
+            }
         }
     }
 
@@ -32,98 +46,119 @@ public class BotController : MonoBehaviour
     {
         priorityCell = null;
         int maxCellPriority = 0;
-
+        List<CellController> priorityCells = new List<CellController>();
+        int[] crossesInLine;
+        int[] zeroesInLine;
+        bool priorityCellFound = false;
         foreach (CellController cell in GameFieldController.freeCells)
         {
-            int[] playerCellsInLine = new int[4];
-            int[] botCellsInLine = new int[4];
-            CountCellContent(1, 1); //fix
-
+            CountCellContent(cell.xID, cell.yID);
 
             int currentCellPriority = 0;
 
             for (int i = 0; i < 4; i++)
             {
-                if (botCellsInLine[i] == GameFieldController.fieldSize - 1)
+
+                if (crossesInLine[i] == GameFieldController.fieldSize - 1)
                 {
                     priorityCell = cell;
+
+                    priorityCellFound = true;
+
                     break;
                 }
-                else if (playerCellsInLine[i] == GameFieldController.fieldSize - 1)
+                else if (zeroesInLine[i] == GameFieldController.fieldSize - 1)
                 {
                     priorityCell = cell;
+
+                    priorityCellFound = true;
+                    
                     break;
                 }
                 else
                 {
-                    if (playerCellsInLine[i] == 0)
+                    if (zeroesInLine[i] == 0)
                     {
-                        currentCellPriority += botCellsInLine[i];
+                        currentCellPriority += crossesInLine[i];
                     }
 
-                    if (botCellsInLine[i] == 0)
+                    if (crossesInLine[i] == 0)
                     {
-                        currentCellPriority += playerCellsInLine[i];
+                        currentCellPriority += zeroesInLine[i];
                     }
                 }
             }
 
-            if (priorityCell != null)
+            if (priorityCellFound)
             {
                 break;
             }
+            else if (currentCellPriority == maxCellPriority)
+            {
+                priorityCells.Add(cell);
+                priorityCell = priorityCells[Random.Range(0, priorityCells.Count)];
+            }
             else if (currentCellPriority > maxCellPriority)
             {
+                priorityCells = new List<CellController>();
+                priorityCells.Add(cell);
                 priorityCell = cell;
                 maxCellPriority = currentCellPriority;
             }
-        }
+        }        
 
-        void CountCellContent(int currentCellXPos, int currentCellYPos)
+        void CountCellContent(int currentCellXID, int currentCellYID)
         {
-            for (int i = 0; i < GameFieldController.fieldSize; i ++)
+            crossesInLine = new int[4];
+            zeroesInLine = new int[4];
+
+            for (int i = 0; i < GameFieldController.fieldSize; i++)
             {
                 //Горизонтальная линия
-                if (GameFieldController.cells[i, currentCellYPos].cellContent == 1)
+                if (GameFieldController.cells[i, currentCellYID].cellContent == 1)
                 {
-                    //playerCellsInLine[0]++;
+                    crossesInLine[0]++;
                 }
-                else if (GameFieldController.cells[i, currentCellYPos].cellContent == 2)
+                else if (GameFieldController.cells[i, currentCellYID].cellContent == 2)
                 {
-                    //botCellsInLine[0]++;
+                    zeroesInLine[0]++;
                 }
 
                 //Вертикальная линия
-                if (GameFieldController.cells[currentCellXPos, i].cellContent == 1)
+                if (GameFieldController.cells[currentCellXID, i].cellContent == 1)
                 {
-                    //playerCellsInLine[1]++;
+                    crossesInLine[1]++;
                 }
-                else if (GameFieldController.cells[currentCellXPos, i].cellContent == 2)
+                else if (GameFieldController.cells[currentCellXID, i].cellContent == 2)
                 {
-                    //botCellsInLine[1]++;
-                }
-
-                /*
-                //Наклонная линия (/)
-                if (GameFieldController.cells[i, i].cellContent == 1)
-                {
-                    //playerCellsInLine[2]++;
-                }
-                else if (GameFieldController.cells[i, i].cellContent == 2)
-                {
-                    //botCellsInLine[2]++;
+                    zeroesInLine[1]++;
                 }
 
-                //Наклонная линия (\)
-                if (GameFieldController.cells[GameFieldController.fieldSize - i, GameFieldController.fieldSize - i].cellContent == 1)
+                if (currentCellXID == currentCellYID)
                 {
-                    //playerCellsInLine[3]++;
+                    //Наклонная линия (/)
+                    if (GameFieldController.cells[i, i].cellContent == 1)
+                    {
+                        crossesInLine[2]++;
+                    }
+                    else if (GameFieldController.cells[i, i].cellContent == 2)
+                    {
+                        zeroesInLine[2]++;
+                    }
                 }
-                else if (GameFieldController.cells[GameFieldController.fieldSize - i, GameFieldController.fieldSize - i].cellContent == 2)
+
+                if (GameFieldController.fieldSize - 1 - currentCellXID == currentCellYID)
                 {
-                    //botCellsInLine[3]++;
+                    //Наклонная линия (\)
+                    if (GameFieldController.cells[GameFieldController.fieldSize - 1 - i, i].cellContent == 1)
+                    {
+                        crossesInLine[3]++;
+                    }
+                    else if (GameFieldController.cells[GameFieldController.fieldSize - 1 - i, i].cellContent == 2)
+                    {
+                        zeroesInLine[3]++;
+                    }
                 }
-                */
             }
         }
     }

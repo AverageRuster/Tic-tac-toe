@@ -29,6 +29,7 @@ public class GameFieldController : MonoBehaviour
     private void Start()
     {
         freeCells = new List<CellController>();
+        cells = new CellController[fieldSize, fieldSize];
         SpawnFigures();
     }
 
@@ -41,6 +42,8 @@ public class GameFieldController : MonoBehaviour
                 Vector3 cellSpawnPosition = new Vector3(i - 1, j - 1); //fix
                 GameObject currentCell = Instantiate(cell, cellSpawnPosition, cell.transform.rotation);
                 cells[i, j] = currentCell.GetComponent<CellController>();
+                cells[i, j].xID = i;
+                cells[i, j].yID = j;
                 freeCells.Add(cells[i, j]);
             }
         }       
