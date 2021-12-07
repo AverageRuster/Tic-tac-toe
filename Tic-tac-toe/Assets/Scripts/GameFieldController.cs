@@ -4,46 +4,55 @@ using UnityEngine;
 
 public class GameFieldController : MonoBehaviour
 {
-    /// <summary>
-    ///  Размер поля (3 - стандартный, 5 - максимальный)
-    /// </summary>
-    public static int fieldSize = 3;
+    public static GameFieldController main;
 
     /// <summary>
     /// Клетка
     /// </summary>
-    [SerializeField] GameObject cell;
+    [SerializeField] private GameObject cell;
 
     /// <summary>
     /// Все клетки
     /// </summary>
-    public static CellController[,] cells;
+    public CellController[,] cells = new CellController[GameManager.fieldSize, GameManager.fieldSize];
 
     /// <summary>
     /// Свободные клетки
     /// </summary>
-    public static List<CellController> freeCells;
-
-   
+    public List<CellController> freeCells = new List<CellController>();
 
     private void Start()
     {
-        freeCells = new List<CellController>();
-        cells = new CellController[fieldSize, fieldSize];
-        SpawnFigures();
+        main = this;
+        SpawnCells();
     }
 
-    private void SpawnFigures()
+    /// <summary>
+    /// Создает поле
+    /// </summary>
+    private void SpawnCells()
     {
-        for (int i = 0; i < fieldSize; i++)
+        for (int i = 0; i < GameManager.fieldSize; i++)
         {
-            for (int j = 0; j < fieldSize; j++)
+            for (int j = 0; j < GameManager.fieldSize; j++)
             {
-                Vector3 cellSpawnPosition = new Vector3(i - 1, j - 1); //fix
+                //Крайняя точка спавна клетки
+                float border = (float)(GameManager.fieldSize - 1) / 2;
+
+                //Указываем позицию спавна текущей клетки
+                Vector3 cellSpawnPosition = new Vector3(i - border, j - border);
+
+                //Создаем клетку
                 GameObject currentCell = Instantiate(cell, cellSpawnPosition, cell.transform.rotation);
+
+                //Добавляем ее в массив клеток
                 cells[i, j] = currentCell.GetComponent<CellController>();
+
+                //Запоминаем ее ID
                 cells[i, j].xID = i;
                 cells[i, j].yID = j;
+
+                //Добавляем ее в список пустых клеток
                 freeCells.Add(cells[i, j]);
             }
         }       

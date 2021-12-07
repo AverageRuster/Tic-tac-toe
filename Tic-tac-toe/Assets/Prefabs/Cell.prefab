@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77c69e1a5466c1442b75a74111ef6555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellAnimator: {fileID: 0}
+  cellAnimator: {fileID: 4591907313105762795}
   cellContent: 0
   xID: 0
   yID: 0
